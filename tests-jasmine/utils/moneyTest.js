@@ -1,4 +1,4 @@
-import { formatCurrency } from "../scripts/utils/money.js";
+import { formatCurrency } from "../../scripts/utils/money.js";
 
 describe("test suite: formatCurrency", () => {
   //BASIC CASE
@@ -18,7 +18,6 @@ describe("test suite: formatCurrency", () => {
     expect(formatCurrency(2000.5)).toEqual("20.01");
   });
 });
-
 
 // //EDGE CASE
 // console.log("rounds down to the nearest cent");
