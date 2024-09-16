@@ -11,8 +11,10 @@ import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import {
   deliveryOptions,
   getDeliveryOption,
+  calculateDeliveryDate,
 } from "../../data/deliveryOptions.js";
 import { renderPaymentSummary } from "./paymentSummary.js";
+import { renderCheckoutHeader } from "./checkoutHeader.js";
 
 const today = dayjs();
 const deliveryDate = today.add(7, "days");
@@ -30,9 +32,7 @@ export function renderOrderSummary() {
 
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const today = dayjs();
-    const deliveryDate = today.add(deliveryOption.deliveryDays, "days");
-    const dateString = deliveryDate.format("dddd, MMMM D");
+    const dateString = calculateDeliveryDate(deliveryOption);
 
     cartSummaryHTML += `
     <div class="cart-item-container
@@ -90,9 +90,7 @@ export function renderOrderSummary() {
     let html = "";
 
     deliveryOptions.forEach((deliveryOption) => {
-      const today = dayjs();
-      const deliveryDate = today.add(deliveryOption.deliveryDays, "days");
-      const dateString = deliveryDate.format("dddd, MMMM D");
+      const dateString = calculateDeliveryDate(deliveryOption);
 
       const priceString =
         deliveryOption.priceCents === 0
@@ -129,14 +127,10 @@ export function renderOrderSummary() {
       const productId = link.dataset.productId;
       removeFromCart(productId);
 
-      const container = document.querySelector(
-        `.js-cart-item-container-${productId}`
-      );
-      container.remove();
-
+      renderCheckoutHeader();
       calculateCartQuantity();
-
       renderPaymentSummary();
+      renderOrderSummary();
     });
   });
 
@@ -176,13 +170,8 @@ export function renderOrderSummary() {
       );
       container.classList.remove("is-editing-quantity");
 
-      const quantityLabel = document.querySelector(
-        `.js-quantity-label-${productId}`
-      );
-      quantityLabel.innerHTML = newQuantity;
-
-      calculateCartQuantity();
-
+      renderCheckoutHeader();
+      renderOrderSummary();
       renderPaymentSummary();
 
       const event = new KeyboardEvent("keydown", {
