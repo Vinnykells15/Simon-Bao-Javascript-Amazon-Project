@@ -1,8 +1,10 @@
+import { validDeliveryOption } from "./deliveryOptions.js";
+
 export let cart;
 loadFromStorage();
 
 export function loadFromStorage() {
- cart = JSON.parse(localStorage.getItem("cart"));
+  cart = JSON.parse(localStorage.getItem("cart"));
   if (!cart) {
     cart = [
       {
@@ -92,6 +94,14 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
       matchingItem = cartItem;
     }
   });
+
+  if (!matchingItem) {
+    return;
+  }
+
+  if (!validDeliveryOption(deliveryOptionId)) {
+    return;
+  }
 
   matchingItem.deliveryOptionId = deliveryOptionId;
   saveToStorage();
